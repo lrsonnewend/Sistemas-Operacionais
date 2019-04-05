@@ -38,21 +38,39 @@ def processamentoA(times, delay):
 
         #Pi dá a vez para processamentoB ser executado
         flag[i] = False
+
+        #acessa recursos exclusivos
         print ("Regiao nao critica A\n")
         time.sleep(delay)    
 
 def processamentoB(times, delay):
     global turn, i, j, flag
     for x in range(times):
+        #permite a entrada na seção crítica
         print ("Secao de Entrada B - ",x+1)
+
+        #estado do Pj está pronto
         flag[j] = True
-        turn = i        
+
+        #indicando de quem é a vez de entrar na seção crítica
+        turn = i
+
+        #enquanto as duas condições forem verdadeiras, ele fica
+        #em estado de espera infinita
         while (flag[i] and turn == i):
             continue
+
+        #código acessando recursos compartilhados
         print ("Regiao Critica B")        
         regiaoCritica()
+
+        #código exeutado após a saída da seção crítica
         print ("Secao de Saida B")
+
+        #Pj dá a vez para o processamentoA ser executado
         flag[j] = False
+
+        #acessa recursos exclusivos
         print ("Regiao nao critica B\n")
         time.sleep(delay)
 
@@ -63,6 +81,8 @@ turn = 0
 i = 0
 j = 1
 flag = []
+
+#os dois estados iniciam como falso
 flag.append(False)
 flag.append(False)
 
