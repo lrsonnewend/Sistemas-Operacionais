@@ -17,9 +17,12 @@ def setBurst(burst):
 def setTcheg(tcheg):
     self.tcheg = tcheg
 
+
     
 def calcWait(t, b):
     return t - b
+
+        
 
 
 infoProcess = []
@@ -53,17 +56,30 @@ while(True):
 
         turnAr = 0
         count= 0
-
+        mediaWait = 0
+        mediaTurnAr = 0
         for j in infoProcess:
             count+=1
             print('Process '+str(count))
 
             turnAr+= (j.burst - j.tcheg)
 
-
             print('TurnAround Time: '+str(turnAr))
             print('Waiting Time: ',calcWait(turnAr, j.burst))
-            print('\n')
+
+            mediaWait+= calcWait(turnAr, j.burst)
+            mediaTurnAr+= turnAr
+            
+            
+        print('\nAVG Waiting Time: ',float(mediaWait/qProcess))
+        print('AVG TurnAround Time: ', float(mediaTurnAr/qProcess))
+        
+        print('****************************\n')
+
+
+        
+
+
 
     elif opcao == '2':
         pass
