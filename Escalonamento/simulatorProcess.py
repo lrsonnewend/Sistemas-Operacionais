@@ -18,12 +18,15 @@ def setTcheg(tcheg):
     self.tcheg = tcheg
 
     
+def calcWait(t, b):
+    return t - b
+
 
 infoProcess = []
 
 while(True):
     opcao = input('1 - FCFS\n2 - SJF\n3 - SRTF\n4 - Round Robin\n5 - Multinível\n6 - Sair\n')
-
+    
     if opcao == '1':
         qProcess = int(input('Insira a quantidade de processos: '))
 
@@ -57,12 +60,26 @@ while(True):
 
             turnAr+= (j.burst - j.tcheg)
 
-            wait = (turnAr - j.burst)
 
             print('TurnAround Time: '+str(turnAr))
-            print('Waiting Time: '+str(wait))
+            print('Waiting Time: ',calcWait(turnAr, j.burst))
             print('\n')
 
-    if opcao == '6':
+    elif opcao == '2':
+        pass
+    
+    elif opcao == '3':
+        pass
+
+    elif opcao == '4':
+        pass
+
+    elif opcao == '5':
+        pass
+    
+    elif opcao == '6':
         break
+
+    else:
+        print('Insira uma opção válida do menu')
               
