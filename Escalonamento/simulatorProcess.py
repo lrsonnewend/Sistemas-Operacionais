@@ -120,8 +120,11 @@ while(True):
         print('****************************\n')        
     
     elif opcao == '3':
-        pass
+        qProcess = int(input('Insira a quantidade de processos: '))
 
+
+
+        
     elif opcao == '4':
         pass
 
