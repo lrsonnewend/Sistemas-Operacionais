@@ -18,9 +18,16 @@ def setTcheg(tcheg):
 
 
 
-
 def calcQ(quantum, burst):
-    return burst - quantum
+    for i in burst:
+        while i != quantum:
+            if i != burst:
+               sobraQ =  i - quantum
+               i -= sobraQ
+        break
+
+def verificaBurst(listBurst, burst):
+    pass    
     
         
 
@@ -47,11 +54,11 @@ def calcFCFS():
     print('\n')
 
     print('Informações dos processos:\n')
-    print('Process',' Burst',' Tempo de chegada')
+    print('Process\t','Burst\t','Tempo de chegada')
 
         
     for i in infoProcessFCFS:        
-        print(int(i.nome+1),"      ", i.burst,"      ",i.tcheg)
+        print(int(i.nome+1),"\t", i.burst,"\t",i.tcheg)
 
     print('\n')
 
@@ -89,14 +96,15 @@ def calcSJF():
         listaBurst.append(b)
 
         infoProcessSJF.sort(key = operator.attrgetter("burst"), reverse = False)
+        infoProcessSJF.sort(key = operator.attrgetter("tcheg"), reverse = False)
 
     print('\n')
 
     print('Informações dos processos:\n')
-    print('Process',' Burst',' Tempo de chegada')
+    print('Process\t','Burst\t','Tempo de chegada')
 
     for k in infoProcessSJF:        
-        print(int(k.nome+1),"      ", k.burst,"      ",k.tcheg)
+        print(int(k.nome+1),'\t', k.burst,'\t',k.tcheg)
 
     print('\n')
 
@@ -138,6 +146,7 @@ def calcSRTF():
 
 def calcRoundR():
     infoProcessRR = []
+    listaBurst = []
     
     qProcessRR = int(input('Insira a quantidade de processos: '))
     quantum = int(input('Insira o quantum de tempo :'))
@@ -148,7 +157,7 @@ def calcRoundR():
         c = int(input('Tempo de chegada: '))
         proc = Processo(i, b, c)
         infoProcessRR.append(proc)
-
+        listaBurst.append(b)
     print('\n')
 
     print('Informações dos processos:\n')
@@ -159,11 +168,20 @@ def calcRoundR():
         print(int(i.nome+1),"      ", i.burst,"      ",i.tcheg)
 
     print('\n')
+    
+    turnAr = 0
+    mediaWait = 0
+    mediaTurnAr = 0
 
     for j in infoProcessRR:
-        j.burst = calcQ(quantum, j.burst)
-        print('burst: ', j.burst)
-
+        while j.burst != 0:
+            if j.burst != quantum:
+                j.burst = caclQ(quantum, j.burst)
+                turnAr += (j.burst - j.tcheg)
+            else:
+                break
+                
+            
 
 while(True):
     opcao = input('1 - FCFS\n2 - SJF\n3 - SRTF\n4 - Round Robin\n5 - Multinível\n6 - Sair\n')
@@ -194,4 +212,3 @@ while(True):
 
     else:
         print('Insira uma opção válida do menu')
-              
