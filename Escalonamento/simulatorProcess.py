@@ -41,45 +41,55 @@ def calcWait(t, b):
 
 def calcFCFS():
     infoProcessFCFS = []
-    
-    qProcess_FCFS = int(input('Insira a quantidade de processos: '))
 
-    for i in range(qProcess_FCFS):
-        print('P '+str(i+1))
-        b = int(input('Burst: '))
-        c = int(input('Tempo de chegada: '))
-        proc = Processo(i, b, c)
-        infoProcessFCFS.append(proc)
+    entrada = input('Digite o tipo de entrada: manual (M/m) arquivo (A/a): ')
 
-    print('\n')
+    if entrada == 'm' or entrada == 'M':
+        qProcess_FCFS = int(input('Insira a quantidade de processos: '))
 
-    print('Informações dos processos:\n')
-    print('Process\t','Burst\t','Tempo de chegada')
+        for i in range(qProcess_FCFS):
+            print('P '+str(i+1))
+            b = int(input('Burst: '))
+            c = int(input('Tempo de chegada: '))
+            proc = Processo(i, b, c)
+            infoProcessFCFS.append(proc)
 
-        
-    for i in infoProcessFCFS:        
-        print(int(i.nome+1),"\t", i.burst,"\t",i.tcheg)
+        print('\n')
 
-    print('\n')
+        print('Informações dos processos:\n')
+        print('Process\t','Burst\t','Tempo de chegada')
 
-    mediaWait = 0
-    mediaTurnAr = 0
-    turnAr = 0
-    for j in infoProcessFCFS:
-       print('Process ',int(j.nome+1))
-       turnAr += (j.burst - j.tcheg)
-       print('TurnAround Time: ',turnAr)
-       print('Waiting Time: ', calcWait(turnAr, j.burst))
-
-       mediaWait+= calcWait(turnAr, j.burst)
-       mediaTurnAr+= turnAr
             
-            
-    print('\nAVG Waiting Time: ',float(mediaWait/qProcess_FCFS))
-    print('AVG TurnAround Time: ', float(mediaTurnAr/qProcess_FCFS))
-        
-    print('****************************\n')
+        for i in infoProcessFCFS:        
+            print(int(i.nome+1),"\t", i.burst,"\t",i.tcheg)
 
+        print('\n')
+
+        mediaWait = 0
+        mediaTurnAr = 0
+        turnAr = 0
+        for j in infoProcessFCFS:
+           print('Process ',int(j.nome+1))
+           turnAr += (j.burst - j.tcheg)
+           print('TurnAround Time: ',turnAr)
+           print('Waiting Time: ', calcWait(turnAr, j.burst))
+
+           mediaWait+= calcWait(turnAr, j.burst)
+           mediaTurnAr+= turnAr
+                
+                
+        print('\nAVG Waiting Time: ',float(mediaWait/qProcess_FCFS))
+        print('AVG TurnAround Time: ', float(mediaTurnAr/qProcess_FCFS))
+            
+        print('****************************\n')
+
+    elif entrada == 'a' or entrada == 'A':
+        arq = open('fcfs.txt')
+        leituraArq = arq.read()
+        tam = len(leituraArq)
+        leituraArq
+        for k in leituraArq:
+            print(k)
         
 def calcSJF():
     infoProcessSJF = []
