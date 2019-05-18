@@ -56,10 +56,11 @@ def calcFCFS():
 
         print('\n')
 
+        infoProcessFCFS.sort(key = operator.attrgetter("tcheg"), reverse = False)
+
         print('Informações dos processos:\n')
         print('Process\t','Burst\t','Tempo de chegada')
 
-            
         for i in infoProcessFCFS:        
             print(int(i.nome+1),"\t", i.burst,"\t",i.tcheg)
 
@@ -142,6 +143,7 @@ def calcSJF():
 def calcSRTF():
     infoProcessSRTF = []
     listaBurst = []
+    listaCheg = []
     
     qProcessSRTF = int(input('Insira a quantidade de processos: '))
 
@@ -152,9 +154,36 @@ def calcSRTF():
         proc = Processo(i, b, c)
         infoProcessSRTF.append(proc)
         listaBurst.append(b)
-        
+        listaCheg.append(c)
 
-def calcRoundR():
+
+    infoProcessSRTF.sort(key = operator.attrgetter("tcheg"), reverse = False)
+    print('\n')
+    
+    print('Informações dos processos:\n')
+    print('Process\t','Burst\t','Tempo de chegada')
+
+    for k in infoProcessSRTF:        
+        print(int(k.nome+1),'\t', k.burst,'\t',k.tcheg)
+
+    print('\n')
+
+    time = 0
+    for i in range(len(listaBurst)):
+        tempor = listaBurst[i]
+        for k in range(tempor):          
+            listaBurst[i] -=1
+            time+=1
+            
+            if time in listaCheg and listaBurst[i+1] < listaBurst[i]:
+                print('burst parou no ',listaBurst[i])
+                print('tempo do próximo processo',time)
+                tempor = listaBurst[i+1]
+                print('vez do burst ',tempor)                                
+            
+        
+    
+'''def calcRoundR():
     infoProcessRR = []
     listaBurst = []
     
@@ -189,7 +218,7 @@ def calcRoundR():
                 j.burst = caclQ(quantum, j.burst)
                 turnAr += (j.burst - j.tcheg)
             else:
-                break
+                break'''
                 
             
 
