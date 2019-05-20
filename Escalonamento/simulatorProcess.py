@@ -158,6 +158,7 @@ def calcSRTF():
 
 
     infoProcessSRTF.sort(key = operator.attrgetter("tcheg"), reverse = False)
+  
     print('\n')
     
     print('Informações dos processos:\n')
@@ -169,7 +170,24 @@ def calcSRTF():
     print('\n')
 
     time = 0
-    for i in range(len(listaBurst)):
+   
+    for i in infoProcessSRTF:
+        while(i.burst != 0):
+            i.burst-=1
+            print(i.burst)
+            break
+
+        if i.burst == 0:
+            print('acabou')
+            
+            
+                
+                    
+            
+                
+                
+            
+    '''for i in range(len(listaBurst)):
         tempor = listaBurst[i]
         for k in range(tempor):          
             listaBurst[i] -=1
@@ -179,7 +197,11 @@ def calcSRTF():
                 print('burst parou no ',listaBurst[i])
                 print('tempo do próximo processo',time)
                 tempor = listaBurst[i+1]
-                print('vez do burst ',tempor)                                
+                print('vez do burst ',tempor)
+                break'''
+
+                
+                
             
         
     
