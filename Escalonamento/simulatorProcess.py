@@ -2,10 +2,12 @@ import random
 import operator
 
 class Processo(object):
-    def __init__(self, nome, burst, tcheg):
+    def __init__(self, nome, burst, tcheg, prioridade, q):
         self.nome = nome
         self.burst = burst
         self.tcheg = tcheg
+        self.prioridade = prioridade
+        self.q = q
 
 def setNome(nome):
     self.nome = nome
@@ -16,6 +18,11 @@ def setBurst(burst):
 def setTcheg(tcheg):
     self.tcheg = tcheg
 
+def setPrioridade(prioridade):
+    self.prioridade = prioridade
+
+def setQ(q):
+    self.q = q
 
 
 def calcQ(quantum, burst):
@@ -51,7 +58,9 @@ def calcFCFS():
             print('P '+str(i+1))
             b = int(input('Burst: '))
             c = int(input('Tempo de chegada: '))
-            proc = Processo(i, b, c)
+            pr = int(input('Prioridade: '))
+            q = int(input('quantum: '))
+            proc = Processo(i, b, c, pr, q)
             infoProcessFCFS.append(proc)
 
         print('\n')
@@ -85,13 +94,37 @@ def calcFCFS():
         print('****************************\n')
 
     elif entrada == 'a' or entrada == 'A':
+        infoProcessFCFS = []
         arq = open('fcfs.txt')
-        leituraArq = arq.read()
-        tam = len(leituraArq)
-        leituraArq
-        for k in leituraArq:
-            print(k)
+        line = arq.readline()
+        while line:
+            proc = line.split("&")[0]
+            proc = proc.split(";")
+            nome = proc[0].split("@")[1]
+            burst = int(proc[1])
+            tcheg = int(proc[2])
+            pri = int(proc[3])
+            quantum = int(proc[4])
+            #print(nome, burst, tche, pri, quant)
+            proc = Processo(nome, burst, tcheg, pri, quantum)
+            infoProcess.append(proc)
+            line = arq.readline()
+
+
+        '''arquivo = arq.read()
+        arquivo = arquivo.split()
         
+        for x in range(len(arquivo)):
+            arquivo[x] = str(arquivo[x]).replace('&','')
+            arquivo[x] = str(arquivo[x]).replace('@','')
+            arquivo[x] = str(arquivo[x]).split(';')
+            for y in arquivo[x]:
+                print(y[0])'''
+            
+            
+                
+
+            
 def calcSJF():
     infoProcessSJF = []
     listaBurst = []
@@ -175,7 +208,7 @@ def calcSRTF():
         while(i.burst != 0):
             i.burst-=1
             print(i.burst)
-            break
+            
 
         if i.burst == 0:
             print('acabou')
@@ -211,7 +244,6 @@ def calcSRTF():
     
     qProcessRR = int(input('Insira a quantidade de processos: '))
     quantum = int(input('Insira o quantum de tempo :'))
-
     for i in range(qProcessRR):
         print('P '+str(i+1))
         b = int(input('Burst: '))
@@ -220,20 +252,16 @@ def calcSRTF():
         infoProcessRR.append(proc)
         listaBurst.append(b)
     print('\n')
-
     print('Informações dos processos:\n')
     print('Process',' Burst',' Tempo de chegada')
-
         
     for i in infoProcessRR:        
         print(int(i.nome+1),"      ", i.burst,"      ",i.tcheg)
-
     print('\n')
     
     turnAr = 0
     mediaWait = 0
     mediaTurnAr = 0
-
     for j in infoProcessRR:
         while j.burst != 0:
             if j.burst != quantum:
