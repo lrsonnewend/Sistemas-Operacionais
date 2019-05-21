@@ -25,6 +25,8 @@ def setQ(q):
     self.q = q
 
 
+
+
 def calcQ(quantum, burst):
     for i in burst:
         while i != quantum:
@@ -33,10 +35,34 @@ def calcQ(quantum, burst):
                i -= sobraQ
         break
 
+
+
 def verificaBurst(listBurst, burst):
     pass    
     
-        
+
+
+
+def leArq(file):
+    listaArquivo = []
+    arq = open(file)
+    line = arq.readline()
+    while line:
+        proc = line.split("&")[0]
+        proc = proc.split(";")
+        nome = proc[0].split("@")[1]
+        burst = int(proc[1])
+        tcheg = int(proc[2])
+        pri = int(proc[3])
+        quantum = int(proc[4])
+        #print(nome, burst, tche, pri, quant)
+        proc = Processo(nome, burst, tcheg, pri, quantum)
+        listaArquivo.append(proc)
+        line = arq.readline()
+
+    return listaArquivo
+
+
 
 def calcWait(t, b):
     if t < b:
@@ -45,83 +71,79 @@ def calcWait(t, b):
         return t - b
 
 
+def imprimiInfo(lista):
+    turnAr = 0
+    mediaWait = 0
+    mediaTurnAr = 0
+
+    for i in lista:
+        turnAr += (i.burst - i.tcheg)
+                
+        print(i.nome,"\t", i.burst,"\t",i.tcheg,"\t\t\t",turnAr,"\t\t",calcWait(turnAr,i.burst))
+                
+        mediaWait+= calcWait(turnAr, i.burst)
+        mediaTurnAr+= turnAr
+
+    print('\n')
+                              
+    print('\nAVG Waiting Time: ',float(mediaWait/len(lista)))
+    print('AVG TurnAround Time: ', float(mediaTurnAr/len(lista)))             
+    print('****************************\n')
+
+    
+    
 
 def calcFCFS():
     infoProcessFCFS = []
 
-    entrada = input('Digite o tipo de entrada: manual (M/m) arquivo (A/a): ')
+    while True:
+        entrada = input('Digite o tipo de entrada: manual (M/m) arquivo (A/a): ')
+      
 
-    if entrada == 'm' or entrada == 'M':
-        qProcess_FCFS = int(input('Insira a quantidade de processos: '))
+        if entrada == 'm' or entrada == 'M':
+            qProcess_FCFS = int(input('Insira a quantidade de processos: '))
 
-        for i in range(qProcess_FCFS):
-            print('P '+str(i+1))
-            b = int(input('Burst: '))
-            c = int(input('Tempo de chegada: '))
-            pr = int(input('Prioridade: '))
-            q = int(input('quantum: '))
-            proc = Processo(i, b, c, pr, q)
-            infoProcessFCFS.append(proc)
+            for i in range(qProcess_FCFS):
+                print('P '+str(i+1))
+                b = int(input('Burst: '))
+                c = int(input('Tempo de chegada: '))
+                pr = 0
+                q = 0
+                proc = Processo(i, b, c, pr, q)
+                infoProcessFCFS.append(proc)
 
-        print('\n')
+            print('\n')
 
-        infoProcessFCFS.sort(key = operator.attrgetter("tcheg"), reverse = False)
+            infoProcessFCFS.sort(key = operator.attrgetter("tcheg"), reverse = False)
 
-        print('Informações dos processos:\n')
-        print('Process\t','Burst\t','Tempo de chegada')
-
-        for i in infoProcessFCFS:        
-            print(int(i.nome+1),"\t", i.burst,"\t",i.tcheg)
-
-        print('\n')
-
-        mediaWait = 0
-        mediaTurnAr = 0
-        turnAr = 0
-        for j in infoProcessFCFS:
-           print('Process ',int(j.nome+1))
-           turnAr += (j.burst - j.tcheg)
-           print('TurnAround Time: ',turnAr)
-           print('Waiting Time: ', calcWait(turnAr, j.burst))
-
-           mediaWait+= calcWait(turnAr, j.burst)
-           mediaTurnAr+= turnAr
-                
-                
-        print('\nAVG Waiting Time: ',float(mediaWait/qProcess_FCFS))
-        print('AVG TurnAround Time: ', float(mediaTurnAr/qProcess_FCFS))
+            mediaWait = 0
+            mediaTurnAr = 0
+            turnAr = 0
             
-        print('****************************\n')
+            print('Informações dos processos:\n')
+            print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
+            imprimiInfo(infoProcessFCFS)
+            break
 
-    elif entrada == 'a' or entrada == 'A':
-        infoProcessFCFS = []
-        arq = open('fcfs.txt')
-        line = arq.readline()
-        while line:
-            proc = line.split("&")[0]
-            proc = proc.split(";")
-            nome = proc[0].split("@")[1]
-            burst = int(proc[1])
-            tcheg = int(proc[2])
-            pri = int(proc[3])
-            quantum = int(proc[4])
-            #print(nome, burst, tche, pri, quant)
-            proc = Processo(nome, burst, tcheg, pri, quantum)
-            infoProcess.append(proc)
-            line = arq.readline()
+        elif entrada == 'a' or entrada == 'A':
+            arquivoFCFS = []
+            arquivoFCFS = leArq('fcfs.txt')
+            print('\n')
 
+            arquivoFCFS.sort(key = operator.attrgetter("tcheg"), reverse = False)
 
-        '''arquivo = arq.read()
-        arquivo = arquivo.split()
-        
-        for x in range(len(arquivo)):
-            arquivo[x] = str(arquivo[x]).replace('&','')
-            arquivo[x] = str(arquivo[x]).replace('@','')
-            arquivo[x] = str(arquivo[x]).split(';')
-            for y in arquivo[x]:
-                print(y[0])'''
-            
-            
+            mediaWait = 0
+            mediaTurnAr = 0
+            turnAr = 0
+
+            print('Informações dos processos:\n')
+            print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
+            imprimiInfo(arquivoFCFS)
+            break
+
+        else:
+            print('Entrada inválida!')
+                   
                 
 
             
@@ -129,47 +151,54 @@ def calcSJF():
     infoProcessSJF = []
     listaBurst = []
 
-    qProcessSJF = int(input('Insira a quantidade de processos: '))
-    
-    for i in range(qProcessSJF):
-        print('P '+str(i+1))
-        b = int(input('Burst: '))
-        c = int(input('Tempo de chegada: '))
-        proc = Processo(i, b, c)
-        infoProcessSJF.append(proc)
-        listaBurst.append(b)
+    while True:
+        entrada = input('Digite o tipo de entrada: manual (M/m) arquivo (A/a): ')
 
-        infoProcessSJF.sort(key = operator.attrgetter("burst"), reverse = False)
-        infoProcessSJF.sort(key = operator.attrgetter("tcheg"), reverse = False)
-
-    print('\n')
-
-    print('Informações dos processos:\n')
-    print('Process\t','Burst\t','Tempo de chegada')
-
-    for k in infoProcessSJF:        
-        print(int(k.nome+1),'\t', k.burst,'\t',k.tcheg)
-
-    print('\n')
-
-    turnAr = 0
-    mediaWait = 0
-    mediaTurnAr = 0
-    for j in infoProcessSJF:
-        print('Process ',int(j.nome+1))
-        turnAr+= (j.burst - j.tcheg)
-
-        print('TurnAround Time: '+str(turnAr))
-        print('Waiting Time: ',calcWait(turnAr, j.burst))
-
-        mediaWait+= calcWait(turnAr, j.burst)
-        mediaTurnAr+= turnAr
+        if entrada == 'm' or entrada == 'M':
+            qProcessSJF = int(input('Insira a quantidade de processos: '))
             
+            for i in range(qProcessSJF):
+                print('P '+str(i+1))
+                b = int(input('Burst: '))
+                c = int(input('Tempo de chegada: '))
+                p = 0
+                q = 0
+                proc = Processo(i, b, c, p, q)
+                infoProcessSJF.append(proc)
+                listaBurst.append(b)
+
+                infoProcessSJF.sort(key = operator.attrgetter("burst"), reverse = False)
+                infoProcessSJF.sort(key = operator.attrgetter("tcheg"), reverse = False)
+
+            print('\n')
+
+           
+
+            print('Informações dos processos:\n')
+            print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
+            imprimiInfo(infoProcessSJF)
+            break
+
+        elif entrada == 'A' or entrada == 'a':
+            arquivoSJF = []
+            arquivoSJF = leArq('fcfs.txt')
+            print('\n')
+
+            arquivoSJF.sort(key = operator.attrgetter("burst"), reverse = False)
+            arquivoSJF.sort(key = operator.attrgetter("tcheg"), reverse = False)
+
+            mediaWait = 0
+            mediaTurnAr = 0
+            turnAr = 0
+
+            print('Informações dos processos:\n')
+            print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
+            imprimiInfo(arquivoSJF)
+            break
+
+        else:
+            print('Entrada inválida!')
             
-    print('\nAVG Waiting Time: ',float(mediaWait/qProcessSJF))
-    print('AVG TurnAround Time: ', float(mediaTurnAr/qProcessSJF))
-        
-    print('****************************\n')
 
 
 
@@ -213,12 +242,6 @@ def calcSRTF():
         if i.burst == 0:
             print('acabou')
             
-            
-                
-                    
-            
-                
-                
             
     '''for i in range(len(listaBurst)):
         tempor = listaBurst[i]
