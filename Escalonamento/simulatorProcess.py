@@ -213,13 +213,18 @@ def calcSRTF():
         print('P '+str(i+1))
         b = int(input('Burst: '))
         c = int(input('Tempo de chegada: '))
-        proc = Processo(i, b, c)
+        q = 0
+        p = 0
+        proc = Processo(i, b, c, q, p)
         infoProcessSRTF.append(proc)
-        listaBurst.append(b)
-        listaCheg.append(c)
+        
 
 
     infoProcessSRTF.sort(key = operator.attrgetter("tcheg"), reverse = False)
+
+    for k in infoProcessSRTF:
+        listaBurst.append(k.burst)
+        listaCheg.append(k.tcheg)
   
     print('\n')
     
@@ -232,31 +237,23 @@ def calcSRTF():
     print('\n')
 
     time = 0
-   
-    for i in infoProcessSRTF:
-        while(i.burst != 0):
-            i.burst-=1
-            print(i.burst)
-            
 
-        if i.burst == 0:
-            print('acabou')
-            
-            
-    '''for i in range(len(listaBurst)):
-        tempor = listaBurst[i]
-        for k in range(tempor):          
-            listaBurst[i] -=1
-            time+=1
-            
-            if time in listaCheg and listaBurst[i+1] < listaBurst[i]:
-                print('burst parou no ',listaBurst[i])
-                print('tempo do próximo processo',time)
-                tempor = listaBurst[i+1]
-                print('vez do burst ',tempor)
-                break'''
+    for x in infoProcessSRTF:
+        while(x.burst != 0):
+            for i in range(len(listaBurst)):
+                burstF = listaBurst[i]
+                x.burst-=1
+                for k in range(burstF):
+                    time+=1
+                    listaBurst[i] -=1
+                    print(listaBurst[i])
 
-                
+                    if time in listaCheg and listaBurst[i] > listaBurst[i+1]:
+                        print('tempo do próximo burst: ',time)
+                        print('vez do burst ',listaBurst[i+1])
+                        
+                        break
+          
                 
             
         
@@ -324,3 +321,4 @@ while(True):
 
     else:
         print('Insira uma opção válida do menu')
+
