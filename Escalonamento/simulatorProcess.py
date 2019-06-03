@@ -25,6 +25,13 @@ def setQ(q):
     self.q = q
 
 
+class ListRR(object):
+    def __init__(self,proc, ta):
+        self.proc = proc
+        self.ta = ta
+    
+
+
 
 
 def calcQ(quantum, burst):
@@ -75,11 +82,13 @@ def imprimiInfo(lista):
     turnAr = 0
     mediaWait = 0
     mediaTurnAr = 0
+    p=0
 
     for i in lista:
+        p+=1
         turnAr += (i.burst - i.tcheg)
                 
-        print(i.nome,"\t", i.burst,"\t",i.tcheg,"\t\t\t",turnAr,"\t\t",calcWait(turnAr,i.burst))
+        print(p,"\t", i.burst,"\t",i.tcheg,"\t\t\t",turnAr,"\t\t",calcWait(turnAr,i.burst))
                 
         mediaWait+= calcWait(turnAr, i.burst)
         mediaTurnAr+= turnAr
@@ -116,10 +125,6 @@ def calcFCFS():
 
             infoProcessFCFS.sort(key = operator.attrgetter("tcheg"), reverse = False)
 
-            mediaWait = 0
-            mediaTurnAr = 0
-            turnAr = 0
-            
             print('Informações dos processos:\n')
             print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
             imprimiInfo(infoProcessFCFS)
@@ -181,15 +186,11 @@ def calcSJF():
 
         elif entrada == 'A' or entrada == 'a':
             arquivoSJF = []
-            arquivoSJF = leArq('fcfs.txt')
+            arquivoSJF = leArq('sjf.txt')
             print('\n')
 
             arquivoSJF.sort(key = operator.attrgetter("burst"), reverse = False)
             arquivoSJF.sort(key = operator.attrgetter("tcheg"), reverse = False)
-
-            mediaWait = 0
-            mediaTurnAr = 0
-            turnAr = 0
 
             print('Informações dos processos:\n')
             print('Process\t','Burst\t','Tempo de chegada\t','TurnAround\t','Wait Time')
@@ -202,7 +203,7 @@ def calcSJF():
 
 
 
-def calcSRTF():
+'''def calcSRTF():
     infoProcessSRTF = []
     listaBurst = []
     listaCheg = []
@@ -239,7 +240,7 @@ def calcSRTF():
     time = 0
 
     for x in infoProcessSRTF:
-        while(x.burst != 0):
+        while(x.burst > 0):
             for i in range(len(listaBurst)):
                 burstF = listaBurst[i]
                 x.burst-=1
@@ -250,47 +251,89 @@ def calcSRTF():
 
                     if time in listaCheg and listaBurst[i] > listaBurst[i+1]:
                         print('tempo do próximo burst: ',time)
-                        print('vez do burst ',listaBurst[i+1])
-                        
-                        break
-          
+                        print('vez do burst ',listaBurst[i+1])                                            
+                        break'''
                 
             
         
     
-'''def calcRoundR():
+def calcRoundR():
     infoProcessRR = []
     listaBurst = []
-    
+    copyBurst = []
+    copyTA = []
     qProcessRR = int(input('Insira a quantidade de processos: '))
-    quantum = int(input('Insira o quantum de tempo :'))
+    quantum = int(input('Insira o quantum de tempo: '))
     for i in range(qProcessRR):
         print('P '+str(i+1))
         b = int(input('Burst: '))
-        c = int(input('Tempo de chegada: '))
-        proc = Processo(i, b, c)
+        c = 0
+        priori = 0
+        proc = Processo(i, b, c, quantum, priori)
         infoProcessRR.append(proc)
         listaBurst.append(b)
-    print('\n')
-    print('Informações dos processos:\n')
-    print('Process',' Burst',' Tempo de chegada')
-        
-    for i in infoProcessRR:        
-        print(int(i.nome+1),"      ", i.burst,"      ",i.tcheg)
+        copyBurst.append(b)
     print('\n')
     
-    turnAr = 0
-    mediaWait = 0
-    mediaTurnAr = 0
-    for j in infoProcessRR:
-        while j.burst != 0:
-            if j.burst != quantum:
-                j.burst = caclQ(quantum, j.burst)
-                turnAr += (j.burst - j.tcheg)
-            else:
-                break'''
-                
+
+    percorre = []
+    valor = 0
+    vez = 0
+    percorre.append(valor)
+    finais = []
+    final = []
+    while sum(listaBurst) >= 0:
+        for i in range(len(listaBurst)):
+            vez+=1
             
+            if listaBurst[i] > quantum and listaBurst[i] > 0:
+                #valor = listaBurst[i]
+                listaBurst[i] -= quantum
+                valor += quantum
+                #valor-=listaBurst[i]
+                percorre.append(valor)
+                
+                       
+            
+            elif listaBurst[i] < quantum and listaBurst[i] > 0:
+                valor += listaBurst[i]
+                listaBurst[i]-=listaBurst[i]
+                #valor-=listaBurst[i]
+                percorre.append(valor)
+
+            if listaBurst[i] == 0:
+                if vez not in final and valor not in final:
+                    final.append(vez)
+                    final.append(valor)
+                    rr = ListRR(vez, valor)
+                    finais.append(rr)
+                    print(vez, 'terminou\nTurnAr: ',valor)
+                    
+            #print(listaBurst[i])
+
+            
+            if vez >= len(listaBurst):
+                vez = 0
+            
+            
+    
+        if sum(listaBurst) == 0:
+            break
+        
+        print('\n')
+
+    finais.sort(key = operator.attrgetter("proc"), reverse = False)
+    for x in finais:
+        copyTA.append(x.ta)
+    
+    print('\nInformações dos processos:\n')
+    print('Process\t','Burst\t','TurnAround\t','Wait Time')
+
+    p = 0
+    for x in range(qProcessRR):
+        p+=1
+        print(p,"\t", copyBurst[x],"\t ",copyTA[x],"\t\t",'foda')
+        
 
 while(True):
     opcao = input('1 - FCFS\n2 - SJF\n3 - SRTF\n4 - Round Robin\n5 - Multinível\n6 - Sair\n')
@@ -304,7 +347,7 @@ while(True):
         calcSJF() 
     
     elif opcao == '3':
-        calcSRTF()
+        print('não funciona')
         
 
 
@@ -313,7 +356,8 @@ while(True):
         calcRoundR()
 
     elif opcao == '5':
-        pass
+        print('não funciona')
+
     
     elif opcao == '6':
         break
@@ -321,4 +365,3 @@ while(True):
 
     else:
         print('Insira uma opção válida do menu')
-
