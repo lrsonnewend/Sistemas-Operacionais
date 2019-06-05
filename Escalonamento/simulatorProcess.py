@@ -88,7 +88,7 @@ def imprimiInfo(lista):
         p+=1
         turnAr += (i.burst - i.tcheg)
                 
-        print(p,"\t", i.burst,"\t",i.tcheg,"\t\t\t",turnAr,"\t\t",calcWait(turnAr,i.burst))
+        print(i.nome,"\t", i.burst,"\t",i.tcheg,"\t\t\t",turnAr,"\t\t",calcWait(turnAr,i.burst))
                 
         mediaWait+= calcWait(turnAr, i.burst)
         mediaTurnAr+= turnAr
@@ -139,6 +139,7 @@ def calcFCFS():
 
             mediaWait = 0
             mediaTurnAr = 0
+
             turnAr = 0
 
             print('Informações dos processos:\n')
@@ -203,7 +204,8 @@ def calcSJF():
 
 
 
-'''def calcSRTF():
+'''def calcSRTF():    print('****************************\n')
+
     infoProcessSRTF = []
     listaBurst = []
     listaCheg = []
@@ -277,19 +279,35 @@ def calcRoundR():
     
 
     percorre = []
-    valor = 0
+    valor = quantum
     vez = 0
+    valorEsp = quantum
     percorre.append(valor)
     finais = []
     final = []
+    listaMod = []
+    listaEspera = []
+
+    for x in listaBurst:
+        listaMod.append(0)
+        
+        listaEspera.append(0)
+
+        
     while sum(listaBurst) >= 0:
+        
         for i in range(len(listaBurst)):
             vez+=1
             
             if listaBurst[i] > quantum and listaBurst[i] > 0:
                 #valor = listaBurst[i]
                 listaBurst[i] -= quantum
+                valorEsp += listaBurst[i]
                 valor += quantum
+
+                listaMod[i] += valor
+                listaEspera[i] += (valor-listaMod[i])
+                
                 #valor-=listaBurst[i]
                 percorre.append(valor)
                 
@@ -297,8 +315,11 @@ def calcRoundR():
             
             elif listaBurst[i] < quantum and listaBurst[i] > 0:
                 valor += listaBurst[i]
+                listaMod[i] += listaBurst[i]
+                valorEsp += listaBurst[i]
                 listaBurst[i]-=listaBurst[i]
                 #valor-=listaBurst[i]
+                listaEspera[i] += (valorEsp-listaMod[i])
                 percorre.append(valor)
 
             if listaBurst[i] == 0:
@@ -307,7 +328,6 @@ def calcRoundR():
                     final.append(valor)
                     rr = ListRR(vez, valor)
                     finais.append(rr)
-                    print(vez, 'terminou\nTurnAr: ',valor)
                     
             #print(listaBurst[i])
 
@@ -330,11 +350,18 @@ def calcRoundR():
     print('Process\t','Burst\t','TurnAround\t','Wait Time')
 
     p = 0
+    tavg = 0
     for x in range(qProcessRR):
         p+=1
-        print(p,"\t", copyBurst[x],"\t ",copyTA[x],"\t\t",'foda')
-        
+        print(p,"\t", copyBurst[x],"\t ",copyTA[x],"\t\t",listaEspera[x])
+        tavg+= copyTA[x]
 
+    print('AVG TurnAround: ',float(tavg)/qProcessRR)
+    print('****************************\n')
+
+    #print(percorre)
+
+    
 while(True):
     opcao = input('1 - FCFS\n2 - SJF\n3 - SRTF\n4 - Round Robin\n5 - Multinível\n6 - Sair\n')
     
